@@ -29,11 +29,18 @@ func getPixelColor(img image.Image, x, y int) color.RGBColor {
 	return color.RGB(dR, dG, dB)
 }
 
+func reverseArray(arr []string) []string {
+	for i, j := 0, len(arr)-1; i < j; i, j = i+1, j-1 {
+		arr[i], arr[j] = arr[j], arr[i]
+	}
+	return arr
+}
+
 func getCharacter(img image.Image, x, y int) string {
-	asciiCharacters := [17]string{"M", "N", "D", "8", "O", "Z", "$", "7", "I", "?", "+", "=", "~", ":", ",", ".", "."}
+	asciiCharacters := reverseArray([]string{"█", "█", "▓", "▓", "▓", "▓", "▒", "░", "░", "░", "M", "#", "8", "?", ":", ",", ".", " "})
 	g := imgColor.GrayModel.Convert(img.At(x, y))
 	gScale := g.(imgColor.Gray).Y
-	pos := int(int(gScale) * 16 / 255)
+	pos := int(int(gScale) * (len(asciiCharacters) - 1) / 255)
 	return asciiCharacters[pos]
 }
 
@@ -85,7 +92,7 @@ func main() {
 	for y := 0; y < h; y++ {
 		for x := 0; x < w; x++ {
 			if *useColors {
-				getPixelColor(reImg, x, y).Printf("#")
+				getPixelColor(reImg, x, y).Printf("█")
 			} else {
 				fmt.Print(getCharacter(reImg, x, y))
 			}
